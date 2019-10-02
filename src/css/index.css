@@ -1,0 +1,12 @@
+.juego {
+    border: 2px solid black;
+    display: flex;
+}
+
+.tableroJugador {
+    border: 2px solid black;
+}
+
+.tableroCpu {
+    border: 2px solid black;
+}
