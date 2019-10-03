@@ -1,12 +1,17 @@
 .juego {
     border: 2px solid black;
     display: flex;
+    margin: auto;
+    justify-content: center;
+    width: 600px;
 }
 
-.tableroJugador {
+.tablero {
     border: 2px solid black;
 }
 
-.tableroCpu {
-    border: 2px solid black;
+.cartas {
+    background: red;
+    width: 200px;
+    display: flex;
 }
