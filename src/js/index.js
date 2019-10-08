@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const FIGURAS = ['J', 'Q', 'K', 'A'];
 const AS = 'A';
 const NUM_JUGADORES = 2;
