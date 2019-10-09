@@ -2,9 +2,13 @@ import _ from 'lodash';
 
 const FIGURAS = ['J', 'Q', 'K', 'A'];
 const AS = 'A';
-const NUM_JUGADORES = 2;
-let jugadoresPlantados = 0;
+const NUM_JUGADORES = 7;
 
+const dom = {
+  areaJugadores: document.querySelector('.area.jugadores')
+}
+
+let jugadoresPlantados = 0;
 let baraja = [];
 
 /**
@@ -127,7 +131,28 @@ const turno = (jugadores, cpu) => {
   }    
 }
 
-const iniciarJuego = () => {  
+const generarTablero = () => {
+  for (let i = 0; i < NUM_JUGADORES; i++) {
+    dom.areaJugadores.innerHTML += 
+    `<div class="tablero jugador jugador${i + 1}">
+      <div class="nombre jugador">
+        Jugador ${i + 1}
+      </div>
+      <div class="circulo">
+        <div class="cartas jugador">
+          <div class="carta">3C</div>
+          <div class="carta">3C</div>
+          <div class="carta">3C</div>
+          <div class="carta">3C</div>
+          <div class="carta">3C</div>
+        </div>
+      </div>      
+    </div>`      
+  }
+}
+
+const iniciarJuego = () => { 
+  generarTablero(); 
   baraja = generarBaraja();
   baraja = barajar();
 

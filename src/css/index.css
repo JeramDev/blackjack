@@ -1,17 +1,101 @@
+:root {
+    --anchoCarta: 35px;
+    --altoCarta: 55px;
+}
+
 .juego {
-    border: 2px solid black;
+    border: 5px solid black;
+    border-bottom: 30px solid black;
+    border-left: 10px solid black;
+    border-right: 10px solid black;
+    background: rgb(0, 94, 0);
+    border-radius: 0 0 50% 50%;
     display: flex;
+    flex-direction: column;
     margin: auto;
-    justify-content: center;
-    width: 600px;
+    width: 1000px;
+    height: 420px;
+
+    & .area {
+        display: flex;
+    }
+
+    & .area.jugadores {
+        justify-content: space-around;
+    }
+
+    & .area.cpu {
+        flex-direction: column;
+        align-items: center;
+        justify-content: end;
+    }
 }
 
 .tablero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & .cartas {
+        display: flex;
+        justify-content: center;
+    }
+      
+    & .cartas.jugador {
+        width: 120px;
+        flex-wrap: wrap;
+    }
+}
+
+.tablero.cpu {
+    border-radius: 0 0 50% 50%;
+    width: 50%;
+    padding: 10px;
     border: 2px solid black;
 }
 
-.cartas {
-    background: red;
-    width: 200px;
+.circulo {
+    display: grid;
+    justify-content: center;
+    border: 2px solid white;
+    border-radius: 100%;
+    width: 80px;
+    height: 80px;
+}
+
+.nombre {
+    font-size: 20px;
+    font-family: sans-serif;
+    margin: 10px;
+    color: white;
+}
+
+.carta {
+    border: 2px solid black;
+    border-radius: 5%;
+    height: var(--altoCarta);
+    width: var(--anchoCarta);
     display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    font-size: 20px;
+    box-shadow: 0 0 10px black;
+}
+
+.jugador2,
+.jugador6 {
+    position: relative;
+    top: 80px;
+}
+
+.jugador3,
+.jugador5 {
+    position: relative;
+    top: 120px;
+}
+
+.jugador4 {
+    position: relative;
+    top: 130px;
 }
