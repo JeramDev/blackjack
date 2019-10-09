@@ -76,12 +76,21 @@ const sacarCartaBaraja = () => {
     alert('No quedan cartas');
 }
 
+/**
+ * Reparto de la mano inicial.
+ * 2 cartas para los jugadores y 1 para cpu.
+ */
 const repartirManoInicial = () => {
-  const primeraCarta = sacarCartaBaraja();
-  const segundaCarta = sacarCartaBaraja();
+  const manoInicial = [];  
+  const primeraCarta = sacarCartaBaraja();  
   mostrarCarta(primeraCarta);
-  mostrarCarta(segundaCarta);
-  return [primeraCarta, segundaCarta];
+  manoInicial.push(primeraCarta);
+  if (jugadorActual.id != "cpu") {
+    const segundaCarta = sacarCartaBaraja();
+    mostrarCarta(segundaCarta);
+    manoInicial.push(segundaCarta);
+  }    
+  return manoInicial;
 }
 
 /**
