@@ -66,6 +66,7 @@ const barajar = () => {
  */
 const mostrarCarta = (carta) => {
   const cartas = document.querySelector(`.cartas.${jugadorActual.id}`);
+  let dibujoPalo = "♠♥♦♣";
   cartas.innerHTML += `<div class="carta">${carta.valor}${carta.palo[0]}</div>`;
 }
 

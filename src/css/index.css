@@ -44,6 +44,7 @@
     & .cartas.jugador {
         width: 120px;
         flex-wrap: wrap;
+        align-self: center;
     }
 }
 
