@@ -1,14 +1,17 @@
 import _ from 'lodash';
 
-const FIGURAS = ['J', 'Q', 'K', 'A'];
+const FIGURAS = ['J', 'Q', 'K'];
 const AS = 'A';
-const NUM_JUGADORES = 7;
 
 const dom = {
-  areaJugadores: document.querySelector('.area.jugadores')
+  areaJugadores: document.querySelector('.area.jugadores'),
+  areaCpu: document.querySelector('.area.cpu')
 }
 
+let jugadores = [];
 let jugadoresPlantados = 0;
+let indJugadorActual = -1;
+let jugadorActual = "";
 let baraja = [];
 
 /**
@@ -31,7 +34,7 @@ const generarBaraja = () => {
   const palos = ['Corazones', 'Treboles', 'Picas', 'Rombos'];
   palos.forEach((palo) => {
     generarCartasPalo(palo);
-  }); 
+  });
   return baraja; 
 }
 
@@ -58,8 +61,27 @@ const barajar = () => {
   return _.shuffle(baraja);
 }
 
-const repartirManoInicial = () => {  
-  return [baraja.pop(), baraja.pop()];
+/**
+ * Función que muestra en la web la carta sacada
+ */
+const mostrarCarta = (carta) => {
+  const cartas = document.querySelector(`.cartas.${jugadorActual.id}`);
+  cartas.innerHTML += `<div class="carta">${carta.valor}${carta.palo[0]}</div>`;
+}
+
+const sacarCartaBaraja = () => {
+  if (baraja.length > 0)
+    return baraja.pop();
+  else
+    alert('No quedan cartas');
+}
+
+const repartirManoInicial = () => {
+  const primeraCarta = sacarCartaBaraja();
+  const segundaCarta = sacarCartaBaraja();
+  mostrarCarta(primeraCarta);
+  mostrarCarta(segundaCarta);
+  return [primeraCarta, segundaCarta];
 }
 
 /**
@@ -68,8 +90,9 @@ const repartirManoInicial = () => {
  * @param {array} mano Mano del jugador actual
  */
 const repartirCarta = (jugador) => {
-  if (baraja.length > 0)
+  if (baraja.length > 0) {
     jugador.mano.push(baraja.pop());
+  }
 }
 
 const calcularValor = (carta) => {
@@ -131,50 +154,84 @@ const turno = (jugadores, cpu) => {
   }    
 }
 
-const generarTablero = () => {
-  for (let i = 0; i < NUM_JUGADORES; i++) {
+/**
+ *  Incluye la cpu y los 7 jugadores.
+ *  (jugadores.lenght - 1) para que no coja a la cpu.
+ */
+const mostrarJugadores = () => {
+  dom.areaCpu.innerHTML += 
+    `<div class="nombre cpu">
+      CPU
+    </div>
+    <div class="tablero cpu">                
+      <div class="cartas cpu">        
+      </div>
+    </div>`
+
+  for (let i = 0; i < jugadores.length - 1; i++) {
     dom.areaJugadores.innerHTML += 
     `<div class="tablero jugador jugador${i + 1}">
       <div class="nombre jugador">
         Jugador ${i + 1}
       </div>
       <div class="circulo">
-        <div class="cartas jugador">
-          <div class="carta">3C</div>
-          <div class="carta">3C</div>
-          <div class="carta">3C</div>
-          <div class="carta">3C</div>
-          <div class="carta">3C</div>
+        <div class="cartas jugador jugador${i + 1}">          
         </div>
       </div>      
     </div>`      
   }
 }
 
-const iniciarJuego = () => { 
-  generarTablero(); 
-  baraja = generarBaraja();
-  baraja = barajar();
+// Marca como actual al siguiente jugador
+const siguienteJugador = () => {
+  indJugadorActual++;
+  if (indJugadorActual == jugadores.length) {
+    indJugadorActual = 0;  
+  }
+  jugadorActual = jugadores[indJugadorActual];
+}
+
+/**
+ * Genera el array de jugadores
+ */
+const generarJugadores = () => {
+  // Generar el resto de jugadores
+  for (let i = 1; i <= 7; i++) {
+    let jugador = {
+      id: `jugador${i}`,
+      mano: [],
+      plantado: false
+    };
+    jugadores.push(jugador);
+  }
 
   // Generar Cpu
   const cpu = {
     id: 'cpu',
-    mano: repartirManoInicial(),
+    mano: [],
     plantado: false
-  }  
+  };
+  jugadores.push(cpu);  
+}
 
-  // Generar el resto de jugadores
-  const jugadores = [];
-  for (let i = 1; i < NUM_JUGADORES; i++) {
-    let jugador = {
-      id: `jugador ${i}`,
-      mano: repartirManoInicial(),
-      plantado: false
-    }
-    jugadores.push(jugador);
-  }
+const iniciarJuego = () => {   
+  baraja = generarBaraja();
+  baraja = barajar();  
   
-  turno(jugadores, cpu);
+  // Generar y mostrar los jugadores
+  generarJugadores();
+  mostrarJugadores();
+
+  // Selecciona al primer jugador
+  siguienteJugador();
+
+  // Reparte dos cartas a cada jugador
+  jugadores.forEach((jugador) => {
+    jugador.mano = repartirManoInicial();
+    siguienteJugador();
+  });
+  
+  //turno(jugadores, cpu);
 }
 
 iniciarJuego();

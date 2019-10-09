@@ -50,6 +50,7 @@
 .tablero.cpu {
     border-radius: 0 0 50% 50%;
     width: 50%;
+    height: 60px;
     padding: 10px;
     border: 2px solid black;
 }
@@ -83,19 +84,19 @@
     box-shadow: 0 0 10px black;
 }
 
-.jugador2,
-.jugador6 {
+.tablero.jugador2,
+.tablero.jugador6 {
     position: relative;
     top: 80px;
 }
 
-.jugador3,
-.jugador5 {
+.tablero.jugador3,
+.tablero.jugador5 {
     position: relative;
     top: 120px;
 }
 
-.jugador4 {
+.tablero.jugador4 {
     position: relative;
     top: 130px;
 }
