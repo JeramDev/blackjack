@@ -49,11 +49,11 @@
 }
 
 .tablero.cpu {
-    border-radius: 0 0 50% 50%;
     width: 50%;
-    height: 60px;
-    padding: 10px;
+    padding-bottom: 20px;
+    margin-top: 20px;
     border: 2px solid black;
+    border-radius: 0 0 40% 40%;
 }
 
 .circulo {
@@ -85,19 +85,27 @@
     box-shadow: 0 0 10px black;
 }
 
+.nombre.plantado {
+    color: red;
+}
+
+.carta.roja {
+    color: red;
+}
+
 .tablero.jugador2,
 .tablero.jugador6 {
     position: relative;
-    top: 80px;
+    top: 70px;
 }
 
 .tablero.jugador3,
 .tablero.jugador5 {
     position: relative;
-    top: 120px;
+    top: 110px;
 }
 
 .tablero.jugador4 {
     position: relative;
-    top: 130px;
+    top: 120px;
 }

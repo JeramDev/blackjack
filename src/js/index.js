@@ -5,14 +5,16 @@ const AS = 'A';
 
 const dom = {
   areaJugadores: document.querySelector('.area.jugadores'),
-  areaCpu: document.querySelector('.area.cpu')
+  areaCpu: document.querySelector('.area.cpu')  
 }
 
 let jugadores = [];
 let jugadoresPlantados = 0;
-let indJugadorActual = -1;
+let indJugadorActual = 0;
 let jugadorActual = "";
 let baraja = [];
+
+let delayInMilliseconds = 1000;
 
 /**
  * Función para generar un array con los valores posibles de una carta
@@ -62,14 +64,42 @@ const barajar = () => {
 }
 
 /**
- * Función que muestra en la web la carta sacada
+ * Dibuja el contenido de la carta
+ * @param {*} carta Carta a dibujar 
  */
-const mostrarCarta = (carta) => {
-  const cartas = document.querySelector(`.cartas.${jugadorActual.id}`);
-  let dibujoPalo = "♠♥♦♣";
-  cartas.innerHTML += `<div class="carta">${carta.valor}${carta.palo[0]}</div>`;
+const dibujarCarta = (carta) => {
+  const cartaDom = document.querySelector(`.carta.carta${carta.valor}${carta.palo[0]}`);
+  switch(carta.palo) {
+    case 'Corazones':
+      cartaDom.className += " roja";
+      cartaDom.textContent = carta.valor + "♥"; 
+      break;
+    case 'Rombos':
+      cartaDom.className += " roja";
+      cartaDom.textContent = carta.valor + "♦";  
+      break;
+    case 'Treboles':
+      cartaDom.textContent = carta.valor + "♣"; 
+      break;
+    case 'Picas':
+      cartaDom.textContent = carta.valor + "♠"; 
+      break;    
+  }
 }
 
+/**
+ * Crea en la web la carta sacada
+ */
+const crearCarta = (carta) => {
+  const cartas = document.querySelector(`.cartas.${jugadorActual.id}`);  
+  cartas.innerHTML += 
+    `<div class="carta carta${carta.valor}${carta.palo[0]}"></div>`;
+  dibujarCarta(carta);
+}
+
+/**
+ * Saca una carta de la baraja
+ */
 const sacarCartaBaraja = () => {
   if (baraja.length > 0)
     return baraja.pop();
@@ -82,15 +112,16 @@ const sacarCartaBaraja = () => {
  * 2 cartas para los jugadores y 1 para cpu.
  */
 const repartirManoInicial = () => {
-  const manoInicial = [];  
+  const manoInicial = [];
   const primeraCarta = sacarCartaBaraja();  
-  mostrarCarta(primeraCarta);
   manoInicial.push(primeraCarta);
   if (jugadorActual.id != "cpu") {
     const segundaCarta = sacarCartaBaraja();
-    mostrarCarta(segundaCarta);
     manoInicial.push(segundaCarta);
-  }    
+  }
+  manoInicial.forEach((carta) => {
+    crearCarta(carta);
+  });    
   return manoInicial;
 }
 
@@ -99,69 +130,92 @@ const repartirManoInicial = () => {
  * y la añade a la mano del jugador o de la cpu
  * @param {array} mano Mano del jugador actual
  */
-const repartirCarta = (jugador) => {
+const repartirCarta = () => {
   if (baraja.length > 0) {
-    jugador.mano.push(baraja.pop());
+    const carta = baraja.pop();
+    jugadorActual.mano.push(carta);
+    crearCarta(carta);
   }
 }
 
+/**
+ * Calcula el valor de una carta
+ * @param {*} carta
+ * @returns Valor de la carta 
+ */
 const calcularValor = (carta) => {
-  if (FIGURAS.includes(carta.valor))
-    return 10;  
-  else
+  if (FIGURAS.includes(carta.valor) || carta.valor == 'A') {
+    return 10;
+  }    
+  else {
     return carta.valor;
+  }    
 }
 
-const sePlanta = (jugador) => {
-  let suma = 0;
-  jugador.mano.forEach((carta) => {    
-    suma += calcularValor(carta);
-  });  
+/**
+ * Decidir si un jugador se planta o no
+ */
+const sePlanta = () => {
+  if (!jugadorActual.plantado) {
+    let suma = 0;
   
-  // Se pasó
-  if (suma > 21) {
-    jugador.plantado = true;
-  }
-  // 80% de prob de plantarse
-  else if (suma >= 19) {
-    const random = Math.ceil(Math.random() * 5);
-    if (random != 5);
-      jugador.plantado = true;
-  }
-  // 50% de prob de plantarse
-  else if (suma >= 16) {
-    const random = Math.ceil(Math.random() * 2);
-    if (random == 1);
-      jugador.plantado = true;
+    jugadorActual.mano.forEach((carta) => {    
+      suma += calcularValor(carta);    
+    });
+    
+    // Se pasó
+    if (suma > 21) {
+      jugadorActual.plantado = true;
+    }
+    // 80% de prob de plantarse
+    else if (suma >= 19) {
+      const random = Math.ceil(Math.random() * 5);
+      if (random != 5);
+        jugadorActual.plantado = true;
+    }
+    // 50% de prob de plantarse
+    else if (suma >= 16) {
+      const random = Math.ceil(Math.random() * 2);
+      if (random == 1);
+        jugadorActual.plantado = true;
+    }   
+    
+    if (jugadorActual.plantado) {
+      const jugadorDom = document.querySelector(`.${jugadorActual.id} .nombre`);
+      jugadorDom.className += " plantado";         
+      jugadoresPlantados++;    
+      console.log(jugadorActual.id + " puntos: " + suma);   
+    }
   }  
-  
-  if (jugador.plantado) {
-    jugadoresPlantados++;
-    console.log(suma);
-  }
 }
 
-const calcularGanador = (jugadores, cpu) => {
+const calcularGanador = () => {
   console.log("FIN");
 }
 
-const turno = (jugadores, cpu) => {  
-  if (jugadoresPlantados == NUM_JUGADORES) {
-    calcularGanador(jugadores, cpu);
+/**
+ * Ronda de todos los jugadores
+ */
+const ronda = () => {
+  if (jugadorActual.plantado) {
+    delayInMilliseconds = 0;
   }
   else {
-    jugadores.forEach((jugador) => {
-      if (!jugador.plantado) {
-        sePlanta(jugador);
-        repartirCarta(jugador);      
-      }
-    });
-    if (!cpu.plantado) {
-      sePlanta(cpu);
-      repartirCarta(cpu);    
+    delayInMilliseconds = 1000;
+  }
+  setTimeout(() => {
+    if (jugadoresPlantados == jugadores.length) {
+      calcularGanador();
     }
-    turno(jugadores, cpu);
-  }    
+    else {
+      sePlanta();
+      if (!jugadorActual.plantado) {
+        repartirCarta();
+      }
+      siguienteJugador();
+      ronda(); 
+    }   
+  }, delayInMilliseconds);    
 }
 
 /**
@@ -169,11 +223,11 @@ const turno = (jugadores, cpu) => {
  *  (jugadores.lenght - 1) para que no coja a la cpu.
  */
 const mostrarJugadores = () => {
-  dom.areaCpu.innerHTML += 
-    `<div class="nombre cpu">
-      CPU
-    </div>
-    <div class="tablero cpu">                
+  dom.areaCpu.innerHTML +=
+  `<div class="tablero cpu">
+      <div class="nombre cpu">
+        CPU
+      </div>                
       <div class="cartas cpu">        
       </div>
     </div>`
@@ -193,12 +247,12 @@ const mostrarJugadores = () => {
 }
 
 // Marca como actual al siguiente jugador
-const siguienteJugador = () => {
-  indJugadorActual++;
+const siguienteJugador = () => { 
   if (indJugadorActual == jugadores.length) {
-    indJugadorActual = 0;  
-  }
+    indJugadorActual = 0;
+  } 
   jugadorActual = jugadores[indJugadorActual];
+  indJugadorActual++;  
 }
 
 /**
@@ -241,7 +295,8 @@ const iniciarJuego = () => {
     siguienteJugador();
   });
   
-  //turno(jugadores, cpu);
+  // Comienza la simulación  
+  ronda();
 }
 
 iniciarJuego();
